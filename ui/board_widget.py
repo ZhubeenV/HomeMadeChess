@@ -138,8 +138,12 @@ class BoardWidget(QGraphicsView):
                     sym = PIECE_SYMBOLS.get((piece.color, piece.piece_type), "?")
                     text = self._scene.addSimpleText(sym)
                     text.setFont(font)
+                    text.setPen(Qt.PenStyle.NoPen)  # no outline; brush alone fills the glyph (same for both colors)
                     text.setBrush(QBrush(QColor(255, 255, 255)) if piece.color == WHITE else QBrush(QColor(30, 30, 30)))
-                    text.setPos(file * self._square_size + self._square_size * 0.15, (7 - rank) * self._square_size + self._square_size * 0.05)
+                    br = text.boundingRect()
+                    cx = file * self._square_size + (self._square_size - br.width()) / 2
+                    cy = (7 - rank) * self._square_size + (self._square_size - br.height()) / 2
+                    text.setPos(cx, cy)
                     self._piece_items[(rank, file)] = text
         for item in self._piece_items.values():
             item.setZValue(2)
